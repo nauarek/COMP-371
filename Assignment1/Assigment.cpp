@@ -145,10 +145,19 @@ class Triangle{
         Point* vertex_3;
     public:
         int translate(int d, char axis){
-            vertex_1->translate(d, axis);
-            vertex_2->translate(d, axis);
-            vertex_3->translate(d, axis);
-            return 0;
+            // If any of the vertices return -2, we return -2
+            // If any of the vertices return -1, we return -1
+            // Since the distance and axis are either valid or invalid for all vertices
+            // We call vertex_1
+            int result = vertex_1->translate(d, axis);
+            if(result == 0){
+                vertex_2->translate(d, axis);
+                vertex_3->translate(d, axis);
+                return 0;
+            }
+            else{
+                return result;
+            }
         }
 
         // 1/2 |(x1(y2-y3) + x2(y3-y1) + x3(y1-y2))|
@@ -227,6 +236,7 @@ class Driver{
                     case 2:
                         cout << "Enter the translate distance:";
                         cin >> d;
+                        // Input verification before calling the method so we don't have to worry about invalid input
                         while(cin.fail()){
                             cout << "Invalid distance" << endl;
                             cout << "Enter a valid distance: ";
@@ -234,16 +244,20 @@ class Driver{
                             cin.ignore(256, '\n');
                             cin >> d;
                             if(!cin.fail()){
-                                cout << "Enter the axis :";
-                                cin >> axis;
-                                triangle->translate(int(d),axis);
-                                cout << "Translation saved" << endl;
                                 break;
                             }
                         }
                         cout << "Enter the axis :";
                         cin >> axis;
-                        triangle->translate(int(d),axis);
+                        while (triangle->translate(d,axis) != 0){
+                            cout << "Invalid axis" << endl;
+                            cout << "Enter a valid axis :";
+                            cin.clear();
+                            cin.ignore(256, '\n');
+                            cin >> axis;
+                            break;
+                        }
+                        triangle->translate(d,axis);
                         cout << "Translation saved" << endl;
                         break;
                     case 3:
@@ -253,17 +267,6 @@ class Driver{
                         return;
                 }
             }
-            // triangle->display();
-            // cout << "Enter the translate distance:" ;
-            // cin >> d;
-            // if(int(d) != d){
-            //     cout << "Invalid distance" << endl;
-            //     return;
-            // }
-            // cout << "Enter the axis :";
-            // cin >> axis;
-            // triangle->translate(int(d),axis);
-            // triangle->display();
         }
 };
 
